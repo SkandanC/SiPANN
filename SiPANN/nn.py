@@ -76,7 +76,10 @@ def cartesian_product(arrays):
         if len(array.shape) > 1:
             arrays[i] = np.squeeze(array)
     for i, a in enumerate(np.ix_(*arrays)):
-        arr.at[..., i].set(a)
+        idx = tuple([slice(None)] * (len(arr.shape) - 1) + [i])
+        val = arr.at[idx]
+        val2 = val.set(a)
+        arr = val2
     return arr.reshape(-1, la)
 
 # ---------------------------------------------------------------------------- #
