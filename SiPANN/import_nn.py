@@ -317,8 +317,7 @@ class ImportLR:
         for j, c in enumerate(combos):
             if c != ():
                 for k in c:
-                    initial = polyCombos.at[:, j].get()
-                    polyCombos.at[:, j].set(X[:, k])
+                    polyCombos = polyCombos.at[:, j].multiply(X[:, k])
         return polyCombos
 
     def validate_input(self, input):
