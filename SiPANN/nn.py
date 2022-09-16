@@ -17,7 +17,11 @@ Current devices:                              (Author)(Date last modified)
 # ---------------------------------------------------------------------------- #
 # Import libraries
 # ---------------------------------------------------------------------------- #
-import numpy as np
+try:
+    import jax.numpy as np
+except ImportError:
+    # import numpy as np
+    pass
 import pkg_resources
 import skrf as rf
 from scipy.interpolate import UnivariateSpline
@@ -67,14 +71,13 @@ LR_bent = import_nn.ImportLR(bent_FILE)
 # with multiple inputs
 def cartesian_product(arrays):
     la = len(arrays)
-    dtype = np.find_common_type([a.dtype for a in arrays], [])
-    l = [_a.astype(float) for _a in arrays]
-    arr = np.empty([a.size for a in arrays] + [la], dtype=dtype)
-    for i, a in enumerate(l):
-        a = a.reshape(a.shape + (1,) * (la - 1))
-        arr[..., i] = a
+    arr = np.empty([a.size for a in arrays] + [la])
+    for i, array in enumerate(arrays):
+        if len(array.shape) > 1:
+            arrays[i] = np.squeeze(array)
+    for i, a in enumerate(np.ix_(*arrays)):
+        arr.at[..., i].set(a)
     return arr.reshape(-1, la)
-
 
 # ---------------------------------------------------------------------------- #
 # Strip waveguide
