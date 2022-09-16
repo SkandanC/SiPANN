@@ -1,7 +1,10 @@
 import pickle
 from itertools import combinations_with_replacement as comb_w_r
 
-import numpy as np
+try:
+    import jax.numpy as np
+except ImportError:
+    import numpy as np
 import tensorflow as tf
 
 
@@ -312,12 +315,10 @@ class ImportLR:
         n = len(X)
         polyCombos = np.ones((n, len(combos)))
         for j, c in enumerate(combos):
-            if c == ():
-                polyCombos[:, j] = 1
-            else:
+            if c != ():
                 for k in c:
-                    polyCombos[:, j] *= X[:, k]
-
+                    initial = polyCombos.at[:, j].get()
+                    polyCombos.at[:, j].set(X[:, k])
         return polyCombos
 
     def validate_input(self, input):
