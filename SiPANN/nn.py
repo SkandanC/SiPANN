@@ -151,9 +151,9 @@ def straightWaveguide(wavelength, width, thickness, sw_angle=90, derivative=None
         OUTPUT = np.zeros((numRows, 4))
         # Loop through the derivative of all the outputs
         for k in range(4):
-            OUTPUT[:, k] = np.squeeze(
+            OUTPUT = OUTPUT.at[:, k].set(np.squeeze(
                 ANN_straight.differentiate(INPUT, d=(0, k, derivative))
-            )
+            ))
 
     # process the output
     if derivative is None:
